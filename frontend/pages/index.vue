@@ -32,9 +32,8 @@ const listItems = ref([]);
 const isLoading = ref(false);
 const originalListItems = ref([]);
 
-
 const fetchListItems = async () => {
-  isLoading.value = true;
+  // isLoading.value = true;
   try {
     const response = await $fetch(serverIP + "/api/delgar/product/list").catch(
       (error) => {
@@ -47,13 +46,13 @@ const fetchListItems = async () => {
     listItems.value = Array.isArray(response) ? response : [];
 
     // Reset search state
-    originalListItems.value = [];
-    searchQuery.value = "";
+    // originalListItems.value = [];
+    // searchQuery.value = "";
   } catch (error) {
     console.error("Error fetching list items:", error);
     listItems.value = []; // fallback
   } finally {
-    isLoading.value = false;
+    // isLoading.value = false;
   }
 };
 
@@ -204,9 +203,12 @@ const filteredProducts = computed(() => {
 
   // Filter by search query
   if (searchQuery.value.trim()) {
-    filtered = filtered.filter((item) =>
-      item.product_name?.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-      item.category?.toLowerCase().includes(searchQuery.value.toLowerCase())
+    filtered = filtered.filter(
+      (item) =>
+        item.product_name
+          ?.toLowerCase()
+          .includes(searchQuery.value.toLowerCase()) ||
+        item.category?.toLowerCase().includes(searchQuery.value.toLowerCase())
     );
   }
 
@@ -357,6 +359,8 @@ watch(
     }
   }
 );
+
+const menuOpen = ref(false);
 </script>
 <template>
   <div>
@@ -365,102 +369,116 @@ watch(
         <!-- Header Section - Mobile Optimized -->
 
         <div
-          class="w-full px-3 sm:px-6 lg:fixed z-10 lg:mx-auto mb-4 lg:mb-5 bg-white rounded-xl shadow-lg py-2"
+          class="lg:flex w-full px-3 z-10 bg-white rounded-xl shadow-lg lg:h-[90px] fixed"
         >
-          <div class="flex flex-col lg:flex-row items-center gap-3 my-2">
+<div class="lg:flex lg:w-11/12  w-full mx-auto"> 
+            <!-- Top Row with Logo and Menu Toggle -->
+          <div class="flex items-center justify-between lg:w-4/12 relative w-full py-4">
             <!-- Logo -->
-            <div class="w-6/12 sm:w-20 lg:w-24 shrink-0 order-1 lg:order-2">
-              <img
-                :src="mainLogo"
-                alt="Logo"
-                class="rounded-full border-2 border-[#26aec6] shadow-md w-full"
-              />
-            </div>
-
-            <!-- Contact Info -->
-            <div
-              class="w-full lg:w-6/12 text-center lg:text-right order-2 lg:order-1"
-            >
-              <p class="text-xs sm:text-sm font-semibold text-gray-800">
-                🕒 Easy Online Order 24/7
-              </p>
-              <p class="text-xs text-gray-600 mt-1 px-2 lg:px-0">
-                JP Rizal Avenue, In front of Penshoppe beside Sanbon
-                Enterprises,<br class="hidden sm:block" />
-                Purok 4 Carmen Annex, Ozamiz City, Philippines
-              </p>
-            </div>
-
-            <!-- Contact Details & Cart Button -->
-            <div
-              class="w-full lg:w-6/12 text-center lg:text-left order-3 flex flex-col lg:flex-row items-center justify-between"
-            >
-              <div>
-                <p class="text-xs sm:text-sm font-semibold text-gray-800">
-                  📞 Contact Us
-                </p>
-                <p class="text-xs text-gray-600 mt-1">
-                  Phone: <span class="font-bold">+63 997 866 5777</span> |
-                  Website: <span class="font-bold">www.delgar.store</span>
-                  <br />
-                  Premium frozen products for wholesale and retail. Fresh
-                  quality guaranteed.
-                </p>
+            <div class="flex items-center lg:gap-x-5 lg:w-fit lg:mx-auto w-full">
+              <div class="lg:w-14 w-12 mr-2">
+                <img
+                  :src="mainLogo"
+                  alt="Logo"
+                  class="rounded-full border-2 border-[#26aec6] shadow-md w-full"
+                />
               </div>
 
-              <!-- Cart Button -->
-              <button
-                @click="openCart"
-                v-if="cartTotals.itemCount > 0"
-                class="relative bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors mt-3 lg:mt-0"
-              >
-                <svg
-                  class="w-5 h-5 inline mr-2"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m6-5v6a2 2 0 11-4 0v-6m4 0V9a2 2 0 10-4 0v4.01"
-                  ></path>
-                </svg>
-                Your Cart
-                <span
-                  class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-6 h-6 flex items-center justify-center"
-                >
-                  {{ cartTotals.itemCount }}
-                </span>
-              </button>
+              <div class="text-xs">
+                🕒 <span class="font-semibold">Easy Online Order 24/7</span
+                ><br />
+                <i class="ml-1 fa fa-phone"></i> <span>+63 997 866 5777</span
+                ><br />
+                <i class="ml-1 fa fa-globe"></i> <span>www.delgar.store</span
+                ><br />
+              </div>
             </div>
+
+            <!-- Mobile Toggle Button -->
+            <button
+              @click="menuOpen = !menuOpen"
+              class="lg:hidden text-gray-700 focus:outline-none absolute top-6 right-1"
+            >
+              <svg
+                v-if="!menuOpen"
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-8 w-8"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M4 6h16M4 12h16M4 18h16"
+                />
+              </svg>
+              <svg
+                v-else
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
           </div>
 
-          <!-- Header Section -->
-          <!-- <div class="text-center mb-2">
-            <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
-              Our Products
-            </h1>
-            <p
-              class="text-sm sm:text-base text-gray-600 max-w-2xl mx-auto px-4"
-            >
-              Premium frozen products for wholesale and retail. Fresh quality
-              guaranteed.
-            </p>
-          </div> -->
+          <!-- Expanded Content -->
+          <div
+            :class="menuOpen ? 'block' : 'hidden'"
+            class="lg:flex items-center space-y-4 w-full"
+          >
+            <div class="">
 
-          <!-- Filter Section - Mobile Optimized -->
-          <div class="mb-6 lg:mb-2 space-y-4 lg:space-y-6">
-            <div class="lg:flex justify-between">
-              <!-- Category Filters -->
-              <div>
-                <h3
-                  class="text-base lg:text-lg font-semibold text-gray-900 mb-3 lg:mb-1"
-                >
+              <!-- Contact & Cart -->
+              <div class="text-sm text-center space-y-2">
+                <!-- Cart Button -->
+                <div class="flex justify-center">
+                  <button
+                    @click="openCart"
+                    v-if="cartTotals.itemCount > 0"
+                    class="relative bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors"
+                  >
+                    <svg
+                      class="w-5 h-5 inline mr-2"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13l2.5 5m6-5v6a2 2 0 11-4 0v-6m4 0V9a2 2 0 10-4 0v4.01"
+                      ></path>
+                    </svg>
+                    Your Cart
+                    <span
+                      class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-6 h-6 flex items-center justify-center"
+                    >
+                      {{ cartTotals.itemCount }}
+                    </span>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <!-- Filters -->
+            <div class="lg:flex gap-x-20 w-fit mr-0 ml-auto">
+              <!-- Categories -->
+              <div class="mb-3">
+                <h3 class=" text-gray-900 text-xs">
                   Categories
                 </h3>
-                <div class="flex flex-wrap gap-2">
+                <div class="flex flex-wrap gap-2 mt-1 mb-3">
                   <button
                     v-for="category in categories"
                     :key="category"
@@ -469,71 +487,72 @@ watch(
                       selectedCategory === category
                         ? 'bg-blue-600 text-white border-blue-600'
                         : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50',
-                      'px-3 py-2 border rounded-full text-xs sm:text-sm font-medium transition-colors',
+                      'px-3 py-1.5 border rounded-full text-xs font-medium transition-colors',
                     ]"
                   >
                     {{ category }}
                   </button>
                 </div>
+
+                <!-- Product Count -->
+                <div class="text-xs text-gray-600">
+                  Showing {{ filteredProducts.length }} of
+                  {{ listItems.length }} products
+                </div>
               </div>
 
-              <!-- Option Filters -->
               <div>
-                <h3
-                  class="text-base lg:text-lg font-semibold text-gray-900 mb-3 lg:mb-1"
-                >
-                  Purchase Options
-                </h3>
-                <div class="flex flex-wrap gap-2">
-                  <button
-                    @click="selectedOption = 'All'"
-                    :class="[
-                      selectedOption === 'All'
-                        ? 'bg-gray-600 text-white border-gray-600'
-                        : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50',
-                      'px-3 py-2 border rounded-full text-xs sm:text-sm font-medium transition-colors',
-                    ]"
-                  >
-                    All Options
-                  </button>
-                  <button
-                    @click="selectedOption = 'Wholesale'"
-                    :class="[
-                      selectedOption === 'Wholesale'
-                        ? 'bg-green-600 text-white border-green-600'
-                        : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50',
-                      'px-3 py-2 border rounded-full text-xs sm:text-sm font-medium transition-colors',
-                    ]"
-                  >
-                    <span class="hidden sm:inline">🏪 </span>Wholesale
-                  </button>
-                  <button
-                    @click="selectedOption = 'Retail'"
-                    :class="[
-                      selectedOption === 'Retail'
-                        ? 'bg-blue-600 text-white border-blue-600'
-                        : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50',
-                      'px-3 py-2 border rounded-full text-xs sm:text-sm font-medium transition-colors',
-                    ]"
-                  >
-                    <span class="hidden sm:inline">🛍️ </span>Retail
-                  </button>
+                <!-- Purchase Options -->
+                <div class="lg:mt-3 mb-5">
+                  <h3 class=" text-gray-900 text-xs">
+                    Purchase Options
+                  </h3>
+                  <div class="flex flex-wrap gap-2 mt-1">
+                    <button
+                      @click="selectedOption = 'All'"
+                      :class="[
+                        selectedOption === 'All'
+                          ? 'bg-gray-600 text-white border-gray-600'
+                          : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50',
+                        'px-3 py-1.5 border rounded-full text-xs font-medium transition-colors',
+                      ]"
+                    >
+                      All Options
+                    </button>
+                    <button
+                      @click="selectedOption = 'Wholesale'"
+                      :class="[
+                        selectedOption === 'Wholesale'
+                          ? 'bg-green-600 text-white border-green-600'
+                          : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50',
+                        'px-3 py-1.5 border rounded-full text-xs font-medium transition-colors',
+                      ]"
+                    >
+                      🏪 Wholesale
+                    </button>
+                    <button
+                      @click="selectedOption = 'Retail'"
+                      :class="[
+                        selectedOption === 'Retail'
+                          ? 'bg-blue-600 text-white border-blue-600'
+                          : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50',
+                        'px-3 py-1.5 border rounded-full text-xs font-medium transition-colors',
+                      ]"
+                    >
+                      🛍️ Retail
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
-
-            <!-- Results Count -->
-            <div class="text-xs sm:text-sm text-gray-600">
-              Showing {{ filteredProducts.length }} of
-              {{ listItems.length }} products
-            </div>
           </div>
+</div>
         </div>
 
         <!-- Order Summary - Mobile Sticky (Updated) -->
         <div
           v-if="cartTotals.itemCount > 0"
-          class="sticky top-0 z-10 bg-white border-b border-gray-200 px-3 sm:px-6 py-3 lg:hidden"
+          class="sticky top-0 bg-white border-b border-gray-200 px-3 sm:px-6 py-3 lg:hidden"
         >
           <div class="flex items-center justify-between">
             <div class="flex items-center space-x-4">
@@ -561,7 +580,7 @@ watch(
 
         <!-- Main Content Container -->
         <div
-          class="px-3 sm:px-6 lg:max-w-7xl lg:mx-auto lg:px-8 py-4 lg:py-1 lg:mt-[280px]"
+                    class="px-3 sm:px-6 lg:max-w-7xl lg:mx-auto lg:px-8 py-4 lg:py-1 lg:mt-[100px] mt-[70px]"
         >
           <!-- Product Grid - Mobile Responsive -->
           <div
