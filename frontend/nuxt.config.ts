@@ -1,12 +1,13 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  compatibilityDate: '2025-05-15',
+  compatibilityDate: "2025-05-15",
   devtools: { enabled: false },
+  ssr: true,
   app: {
     head: {
-      charset: 'utf-8',
-      viewport: 'width=device-width, initial-scale=1',
-      title: 'Delgar Frozen Products',
+      charset: "utf-8",
+      viewport: "width=device-width, initial-scale=1",
+      title: "Delgar Frozen Products",
       link: [
         {
           rel: "stylesheet",
@@ -15,6 +16,23 @@ export default defineNuxtConfig({
       ],
     },
   },
-  css: ['~/assets/css/main.css'],
-  modules: ['@nuxtjs/tailwindcss']
-})
+  css: ["~/assets/css/main.css"],
+  modules: ["@nuxtjs/tailwindcss", "nuxt-facebook-chat"],
+  nuxtFacebookChat: {
+    pageId: "100855749241228",
+    themeColor: "#0084ff",
+    loggedInGreeting: "Hi! How can we help you?",
+    loggedOutGreeting: "Hi! Please log in to chat with us.",
+    locale: "en_US",
+  },
+  nitro: {
+    experimental: {
+      wasm: true,
+    },
+  },
+  vite: {
+    define: {
+      __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: "false",
+    },
+  },
+});
