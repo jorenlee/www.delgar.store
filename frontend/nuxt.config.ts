@@ -25,7 +25,10 @@ export default defineNuxtConfig({
     },
   },
   css: ["~/assets/css/main.css"],
-  modules: ["@nuxtjs/tailwindcss", "nuxt-facebook-chat"],
+  modules: ["@nuxtjs/tailwindcss", "nuxt-facebook-chat", "nuxt-gtag"],
+  gtag: {
+    id: 'G-WCCRGMPYMY'
+  },
   nuxtFacebookChat: {
     pageId: "100855749241228",
     themeColor: "#0084ff",
